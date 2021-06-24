@@ -84,6 +84,7 @@ abstract class TweetSet extends TweetSetInterface:
   def descendingByRetweet: TweetList // = Cons(mostRetweeted, remove(mostRetweeted).descendingByRetweet)
 
 
+  def mostRetweetedAcc(max: Tweet): Tweet 
   /**
    * The following methods are already implemented
    */
@@ -125,6 +126,8 @@ class Empty extends TweetSet:
 
   def descendingByRetweet: TweetList = Nil
 
+  def mostRetweetedAcc(max: Tweet): Tweet = max
+
   /**
    * The following methods are already implemented
    */
@@ -143,7 +146,7 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet:
   def isEmpty: Boolean = false
 
    def union(that: TweetSet): TweetSet = 
-    left.union(right.union(that)).incl(elem)
+    left.union(right).union(that).incl(elem)
 
   // def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = 
   //   if p(elem) then 
@@ -154,7 +157,7 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet:
     if p(elem) then 
       left.filterAcc(p, acc.incl(elem)).union(right.filterAcc(p, acc))
     else 
-    left.filterAcc(p, acc).union(right.filterAcc(p, acc))
+      left.filterAcc(p, acc).union(right.filterAcc(p, acc))
   
   // def mostRetweeted: Tweet = 
   //   if !left.isEmpty && left.mostRetweeted.retweets > elem.retweets then
@@ -166,14 +169,21 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet:
   //     right.mostRetweeted
   //   else 
   //     elem
-  def mostRetweeted: Tweet = 
-    var max: Tweet = this.elem
-    this.foreach(t => if t.retweets > max.retweets then  max = t )
-    max
+
+  // !!TODO: do this recursively w/ accumulator
+
+  // def mostRetweeted: Tweet = 
+  //   var max: Tweet = this.elem
+  //   this.foreach(t => if t.retweets > max.retweets then  max = t )
+  //   max
+
+  def mostRetweeted: Tweet = mostRetweetedAcc(elem)
+
+  def mostRetweetedAcc(max: Tweet): Tweet = 
+    left.mostRetweetedAcc(right.mostRetweetedAcc(if elem.retweets > max.retweets then elem else max))
 
   def descendingByRetweet: TweetList = 
-    val mostRet = mostRetweeted
-    Cons(mostRet, remove(mostRet).descendingByRetweet)
+    Cons(mostRetweeted, remove(mostRetweeted).descendingByRetweet)
   
   /**
    * The following methods are already implemented
