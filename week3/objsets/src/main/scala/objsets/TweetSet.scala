@@ -148,6 +148,7 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet:
    def union(that: TweetSet): TweetSet = 
     // left.union(right).union(that).incl(elem) // exponential solution
     left.union(right.union(that)).incl(elem)  // linear solution??
+    // left.union(right.union(that).incl(elem))  // linear solution??
     // var s: TweetSet = Empty()  // linear solution
     // this.foreach(e => {s = s.incl(e)})
     // that.foreach(e => {s = s.incl(e)})
