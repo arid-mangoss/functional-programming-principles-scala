@@ -75,9 +75,21 @@ trait Huffman extends HuffmanInterface:
    *       println("integer is  : "+ theInt)
    *   }
    */
-  def times(chars: List[Char]): List[(Char, Int)] = 
-    chars.groupBy(identity).mapValues(v => v.length).toList
+  // def times(chars: List[Char]): List[(Char, Int)] = 
+  //   chars.groupBy(identity).mapValues(v => v.length).toList
       
+  def times(chars: List[Char]): List[(Char, Int)] = 
+    def addOne(c: Char, accum: List[(Char, Int)]): List[(Char, Int)] = 
+      accum match {
+        case head :: tail => if head._1 == c then (c, head._2+1) :: tail else head :: addOne(c, tail)
+        case _ => List(c -> 1)
+      }
+    def iter(chars: List[Char], accum: List[(Char, Int)]): List[(Char, Int)] = 
+      chars match {
+        case head :: tail => iter(tail, addOne(head, accum))
+        case _ => accum
+      }
+    iter(chars, List())
 
   /**
    * Returns a list of `Leaf` nodes for a given frequency table `freqs`.
