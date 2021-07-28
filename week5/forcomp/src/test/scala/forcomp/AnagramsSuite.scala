@@ -90,6 +90,7 @@ class AnagramsSuite extends munit.FunSuite:
       List("rulez", "Linux"),
       List("Linux", "rulez")
     )
+    println(sentenceAnagrams(sentence).toSet)
     assertEquals(sentenceAnagrams(sentence).toSet, anas.toSet)
   }
 
